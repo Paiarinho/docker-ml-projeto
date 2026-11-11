@@ -4,6 +4,7 @@ import pickle
 
 import numpy as np
 import pandas as pd
+from dotenv import load_dotenv
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
 from sqlalchemy import create_engine
@@ -11,6 +12,11 @@ from sqlalchemy import create_engine
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
+
+load_dotenv(override=True)
+DB_PATH = os.getenv("DB_PATH")
+MODEL_PATH = os.getenv("MODEL_PATH")
+
 # Passo 1
 # FUncao para leitura do dataset
 def read_dataset(path):
@@ -46,7 +52,7 @@ def evaluate(model:LinearRegression, y:np.ndarray, x:np.ndarray):
 
 if __name__ == "__main__":
     # Carregar os dados
-    df = read_dataset(path='heat_exchanger.db')
+    df = read_dataset(path=DB_PATH)
 
     # Treinar o modelo
     x = df['day_index'].values.reshape(-1, 1)
@@ -57,4 +63,5 @@ if __name__ == "__main__":
     evaluate(model, y, x)
 
     # Salvar o modelo treinado
-    save_model(model, path='artifacts/heat_efficiency_model.pkl')
+    save_model(model, path=MODEL_PATH)
+    logger.info("Modelo treinado e salvo com sucesso!")
