@@ -23,13 +23,34 @@ pip install -r requirements.txt
 ```
 
 4. Criar a imagem:
+- Imagem treino
 ```python
-docker build -t docker-ml-projeto .
+docker build -f Dockerfile.train -t docker-ml-projeto-train .
+```
+
+- Imagem inferencia
+```python
+docker build -f Dockerfile.inference -t docker-ml-projeto-inference .
 ```
 
 5. Executar o container:
+- Container de treino:
 ```python
-docker run docker-ml-projeto
+docker run -v $(pwd)/artifacts:/app/artifacts docker-ml-projeto-train
+```
+Utilizamos este comando para salvar o modelo gerado no host
+
+- Container de inferencia:
+
+```python
+
+docker run -v $(pwd)/artifacts:/app/artifacts docker-ml-projeto-inference python3 src/inference.py --efficiency 300
+
+```
+```python
+
+docker run -v $(pwd)/artifacts:/app/artifacts docker-ml-projeto-inference python3 src/inference.py --data 90
+
 ```
 
 ---
